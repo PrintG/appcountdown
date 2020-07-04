@@ -1,0 +1,70 @@
+/* 初始化rem值 */
+html{font-size:100px;}
+body{font-size: 0.16rem;}
+h1,.h1{font-size: 0.4rem;}
+h2,.h2{font-size: 0.32rem;}
+h3,.h3{font-size: 0.28rem;}
+h4,.h4{font-size: 0.24rem;}
+h5,.h5{font-size: 0.2rem;}
+h6,.h6{font-size: 0.16rem;}
+h1,h2,h3,h4,h5,h6{
+  color: #353535;
+  margin-bottom: 0.08rem !important;
+}
+html,body{
+  width: 100%;
+  color: #555555;
+  background-color: #ffffff;
+}
+
+/* 公用样式(操作类) */
+.float-l{float:left;}
+.float-r{float:right;}
+/* 图片充满父级 */
+.img-fillparent{width: 100%;height:100%;}
+
+.clearfix:after{
+    content:'';
+    display:block;
+    clear:both;
+}
+.clearfix{zoom:1;}
+/* 文本溢出处理(使用时需要给该类名的元素设置一个高度/行高，按照该元素的行高设置，行高的1倍则显示一行，2倍则显示两行) */
+.text-ellips{
+  overflow : hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+/* 单行文本溢出处理 */
+.text-ellips-single{
+  overflow: hidden;
+  text-overflow: ellipsis;
+	white-space: nowrap;
+}
+/* 解决字体不居中问题（也可以使用padding)撑开 */
+.fonthcenter{
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+}
+/* 公用按钮过渡样式 */
+.c-btn-active{
+  outline: none;
+}
+.c-btn-active:active{
+  -webkit-opacity: 0.8;
+  opacity: 0.8;
+}
+/* 隐藏元素 */
+.c-hide{
+  display: none !important;
+}
+/* 加载中文字 */
+.c-loadfont{
+  text-align: center;
+  font-size: 0.24rem;
+  line-height: normal;
+  padding-top: 0.2rem;
+}

@@ -1,0 +1,208 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>cd</title>
+    <link rel="stylesheet" type="text/css" href="./css/api.css" />
+    <link rel="stylesheet" type="text/css" href="./css/common.css" />
+    <script type="text/javascript" src="./script/rem.js"></script>
+    <style type="text/css">
+      html,body{
+        height: 100%;
+        background-color: #000000;
+      }
+      .item-time{
+        position: relative;
+        color: #ffffff;
+        height: 20%;
+      }
+      .item-time .time{
+        position: absolute;
+        top: 50%;
+        bottom: 0;
+        height: 1.2rem;
+        margin-top: -0.7rem;
+        width: 100%;
+        text-align: center;
+        font-size: 1.2rem;
+        line-height: 1;
+      }
+      .item-time .time.notime{
+        color: red;
+      }
+      .item-time .time .sub{
+        font-size: 0.3em;
+      }
+
+    </style>
+</head>
+
+  <div class="item-time years clearfix">
+    <div class="time">
+      <span class="content">00</span>
+      <span class="sub">YRS</span>
+    </div>
+  </div>
+  <div class="item-time days clearfix">
+    <div class="time">
+      <span class="content">00</span>
+      <span class="sub">DAY</span>
+    </div>
+  </div>
+  <div class="item-time hours clearfix">
+    <div class="time">
+      <span class="content">00</span>
+      <span class="sub">HRS</span>
+    </div>
+  </div>
+  <div class="item-time minutes clearfix">
+    <div class="time">
+      <span class="content">00</span>
+      <span class="sub">MIN</span>
+    </div>
+  </div>
+  <div class="item-time seconds clearfix">
+    <div class="time">
+      <span class="content">00</span>
+      <span class="sub">SEC</span>
+    </div>
+  </div>
+</body>
+<script type="text/javascript" src="./script/lib/require.min.js"></script>
+<script type="text/javascript" src="./script/app.js"></script>
+
+<script type="text/javascript">
+
+
+
+    apiready = function() {
+      //重新配置引入url(因为该页面与其他页面不在同一目录)
+      require.config({
+        baseUrl: "./script/",
+      });
+
+
+      require(["apijs","moment","common"], function($,moment,common){
+
+          var oTimes = $api.domAll(".time"),
+              oContents = $api.domAll(".content");
+
+          //存储获取的时间
+          var _countDownTime,timer;
+
+          //是否有获取过时间
+
+          var hasGetTime = $api.getStorage("countDown");
+          if(hasGetTime == undefined){
+            _countDownTime = getCountDown();
+            $api.setStorage('countDown', _countDownTime.valueOf());
+            exe(_countDownTime.valueOf());
+          }else{
+            exe(hasGetTime);
+            return;
+          }
+
+          function exe(countTime){
+            timer = setInterval(function(){
+              var _nowTime = moment(new Date());
+              //获取所剩下的毫秒数
+              var _ms = countTime - _nowTime.valueOf();
+
+              //毫秒数转为其他单位
+              var _Y = Math.floor(_ms/1000/60/60/24/30/12);
+              var _Mon = Math.floor(_ms/1000/60/60/24/30)%12;
+              var _D = Math.floor(_ms/1000/60/60/24)%30;
+              var _H = Math.floor(_ms/1000/60/60)%24;
+              var _M = Math.floor(_ms/1000/60)%60;
+              var _S = Math.floor(_ms/1000)%60;
+
+
+              _D = _Mon*30+_D;
+              
+              $api.text(oContents[0], toTwo(_Y));
+              $api.text(oContents[1], toTwo(_D));
+              $api.text(oContents[2], toTwo(_H));
+              $api.text(oContents[3], toTwo(_M));
+              $api.text(oContents[4], toTwo(_S));
+
+              //检测倒计时是否结束
+              var detectionArr = [_Y,_D,_H,_M,_S];
+              detectionCountDownEnd(0);
+              function detectionCountDownEnd(i){
+                if(i >= detectionArr.length){ return; }
+                if(detectionArr[i] <= 0){
+                  setNoTime(i);
+                  detectionCountDownEnd(i+1);
+                }
+              }
+
+            },1000);
+          }
+
+
+
+          //设置计时结束
+          function setNoTime(index){
+            $api.addCls(oTimes[index], 'notime');
+            if(index == 4){
+              //秒数也结束后
+              clearInterval(timer);
+              alert("YOU DIE");
+            }
+          };
+
+          //获取倒计时结束时间
+          function getCountDown(){
+            var theMoment = moment();
+
+            var sec = 0;
+            //获取随机天数
+            var time = {
+              YRS: getRandom(0,50),
+              DAY: getRandom(0,360),
+              HRS: getRandom(0,23),
+              MIN: getRandom(0,59),
+              SEC: getRandom(0,60),
+            };
+            //随机挑选幸运用户设置5分钟5秒的时间
+            if(getRandom(1,10) == 1){
+              var time = {
+                YRS: 0,
+                DAY: 0,
+                HRS: 0,
+                MIN: 5,
+                SEC: 5,
+              };
+            }
+            //计算并叠加秒数
+            sec += time.YRS*12*30*24*60*60;
+            sec += time.DAY*24*60*60;
+            sec += time.HRS*60*60;
+            sec += time.MIN*60;
+            sec += time.SEC;
+
+            theMoment.add(sec,"s");
+
+            return theMoment;
+          }
+
+
+          //取随机数
+          function getRandom(min,max){
+            return Math.floor(Math.random()*(max-min+1))+min;
+          }
+
+          //时间补0
+          function toTwo(num){
+            return num > 9?''+num:"0"+num;
+          }
+
+      });
+
+    };
+</script>
+
+</html>

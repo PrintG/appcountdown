@@ -94,7 +94,6 @@
           var _countDownTime,timer;
 
           //是否有获取过时间
-
           var hasGetTime = $api.getStorage("countDown");
           if(hasGetTime == undefined){
             _countDownTime = getCountDown();
@@ -121,7 +120,10 @@
 
 
               _D = _Mon*30+_D;
-              
+
+              //存储日期信息，用于递归判断
+              var detectionArr = [_Y,_D,_H,_M,_S];
+
               $api.text(oContents[0], toTwo(_Y));
               $api.text(oContents[1], toTwo(_D));
               $api.text(oContents[2], toTwo(_H));
@@ -129,7 +131,6 @@
               $api.text(oContents[4], toTwo(_S));
 
               //检测倒计时是否结束
-              var detectionArr = [_Y,_D,_H,_M,_S];
               detectionCountDownEnd(0);
               function detectionCountDownEnd(i){
                 if(i >= detectionArr.length){ return; }
@@ -167,13 +168,13 @@
               MIN: getRandom(0,59),
               SEC: getRandom(0,60),
             };
-            //随机挑选幸运用户设置5分钟5秒的时间
-            if(getRandom(1,10) == 1){
-              var time = {
+            //随机挑选幸运用户设置1分钟5秒的时间
+            if(getRandom(1,4) == 1){
+              time = {
                 YRS: 0,
                 DAY: 0,
                 HRS: 0,
-                MIN: 5,
+                MIN: 1,
                 SEC: 5,
               };
             }
@@ -195,9 +196,19 @@
             return Math.floor(Math.random()*(max-min+1))+min;
           }
 
-          //时间补0
+          //时间补0,并判断是否为负数，为负数则改为0
           function toTwo(num){
-            return num > 9?''+num:"0"+num;
+            return num>9?''+num:(num<0?'00':'0'+num);
+            // if(num > 9){
+            //   return ''+num;
+            // }else{
+            //   if(num < 0){
+            //     return '00';
+            //   }else{
+            //     return '0'+num;
+            //
+            //   }
+            // }
           }
 
       });

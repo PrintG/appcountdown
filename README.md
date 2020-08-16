@@ -1,2 +1,2 @@
 # APP-CountDown
-###### 模仿美国恐怖电影《倒忌时》 中的APP，使用APICloud打包的安卓APP。
+###### 倒计时 APP，使用APICloud打包的安卓APP。
